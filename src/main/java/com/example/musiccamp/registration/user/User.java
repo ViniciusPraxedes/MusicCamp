@@ -1,15 +1,13 @@
 package com.example.musiccamp.registration.user;
 
+import com.example.musiccamp.Album;
+import com.example.musiccamp.song.Song;
 import com.example.musiccamp.registration.artist.Artist;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,15 +19,22 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private Long id;
     private String userName;
     private String email;
     private String password;
     private String aboutYou;
     private String profilePic;
+    @OneToMany(targetEntity = Album.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_album_fk", referencedColumnName = "user_id")
     private List<Album> favoriteAlbums;
+    @OneToMany(targetEntity = Song.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_song_fk", referencedColumnName = "user_id")
     private  List<Song> favoriteSongs;
-    private List<Artist>  artistsFollowing = new ArrayList<>();
+    @OneToMany(targetEntity = Artist.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_artist_fk", referencedColumnName = "user_id")
+    private List<Artist>  artistsFollowing;
     private Boolean locked = false;
     private Boolean enabled = false;
 

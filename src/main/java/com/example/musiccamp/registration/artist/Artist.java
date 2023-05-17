@@ -1,6 +1,7 @@
 package com.example.musiccamp.registration.artist;
 
-import com.example.musiccamp.registration.Song;
+import com.example.musiccamp.Album;
+import com.example.musiccamp.song.Song;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,17 +21,23 @@ import java.util.List;
 public class Artist implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "artist_id")
     private Long id;
     private String artistName;
+    private String password;
     private String email;
     private String aboutYou;
     private String profilePicUrl;
+    @OneToMany(targetEntity = Album.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "artist-album_fk", referencedColumnName = "artist_id")
     private List<Album>Albums;
-    @Transient
+    @OneToMany(targetEntity = Song.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "artist-song_fk", referencedColumnName = "artist_id")
     private List<Song> songs;
 
 
-    public Artist(String artistName, String email, String aboutYou, String profilePicUrl) {
+    public Artist(String artistName, String email, String aboutYou, String profilePicUrl, String password) {
+        this.password = password;
         this.artistName = artistName;
         this.email = email;
         this.aboutYou = aboutYou;
